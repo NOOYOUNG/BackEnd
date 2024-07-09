@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Calculator</title>
+<script>
+function calcstart(){
+	var a=document.getElementById("a").value;
+	var b=document.getElementById("b").value;
+	var oper=document.getElementById("op").value;
+	var form=document.getElementById("calcform");
+	
+	if(oper=="plus"){
+		form.action="/calAdd";
+	}
+	else if(oper=="minus"){
+		form.action="/calSub";
+	}
+	else if(oper=="mul"){
+		form.action="/calMul";
+	}
+	else if(oper=="div"){
+		form.action="/calDiv";
+	}
+	else if(oper=="all"){
+		fomr.action="/calcall";
+	}
+	form.submit();
+}
+</script>
+</head>
+<body>
+	<form id="calcform" name="calc" method="GET" action="">
+		<input type="text" id="a" name="a"><br>
+		<input type="text" id="b" name="b"><br>
+		<select id="op" name="op">
+			<option value="all">모두</option>
+			<option value="plus">더하기</option>
+			<option value="minus">빼기</option>
+			<option value="mul">곱하기</option>
+			<option value="div">나누기</option>
+		</select>
+		<input type="button" value="calc" onclick="calcstart()">
+	</form>
+</body>
+</html>
