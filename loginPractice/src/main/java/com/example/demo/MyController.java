@@ -1,4 +1,4 @@
-package com.example.demo;
+/*package com.example.demo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,3 +61,4 @@ public class MyController {
 		return "logout";
 	}
 }
+*/

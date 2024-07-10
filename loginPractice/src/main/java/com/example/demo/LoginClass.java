@@ -2,6 +2,7 @@ package com.example.demo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class LoginClass {
 	 private List<Member> members=new ArrayList<>();
@@ -11,19 +12,19 @@ public class LoginClass {
 		 members.add(new Member("YUN", "yun", "yun", 20, "Seoul", "0101112"));
 	 }
 	 
-	 public Member findById(String id) {
+	 public Member findById(String userId) {		 
 		 for(Member m:members) {
-			 if(m.getId().equals(id)) {
+			 if(m.getId().equals(userId)) {
 				 return m;
 			 }
 		 }
 		 return null;
 	 }
 	 
-	 public boolean login(String id, String pwd) {
+	 public boolean login(MemoRepository memoRepository, String userId, String pwd) {
 		boolean idFound=false;
 		for(Member m:members) {
-			if(m.getId().equals(id)) {
+			if(m.getId().equals(userId)) {
 				if(m.getPassword().equals(pwd)) {
 					idFound=true;
 					return true;
