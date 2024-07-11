@@ -10,7 +10,7 @@
 로그인 성공!<br>
 --개인정보조회--<br>
 아이디: ${currentuserId} <br>
-이름: ${currentName} <br>
+이름: ${currentName}<br>
 나이: ${currentAge} <br>
 주소: ${currentAddress} <br>
 전화번호: ${currentPhone} <br>

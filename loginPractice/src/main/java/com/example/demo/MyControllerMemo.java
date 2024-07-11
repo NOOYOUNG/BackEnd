@@ -15,7 +15,7 @@ public class MyControllerMemo {
 	private MemoRepository memoRepository;
 	LoginClassMemo lC=new LoginClassMemo();
 	
-	@RequestMapping(value="/joins", method=RequestMethod.GET)
+	@RequestMapping(value="/joins", method=RequestMethod.POST)
 	public String joinStart(HttpServletRequest request) {
 		String id=request.getParameter("id");
 		String pwd=request.getParameter("pwd");
@@ -38,7 +38,7 @@ public class MyControllerMemo {
     	return "complete";
 	}
 
-	@RequestMapping(value="/logIn", method = RequestMethod.GET)
+	@RequestMapping(value="/logIn", method = RequestMethod.POST)
 	public String logIn(HttpServletRequest request) {
 		String id=request.getParameter("id");
 		String pwd=request.getParameter("pwd");
@@ -71,6 +71,10 @@ public class MyControllerMemo {
 		
 		Memo loggedMemo=memoRepository.findByUserId(userid);
 		request.setAttribute("currentuserId", loggedMemo.getUserId());
+	    request.setAttribute("currentName", loggedMemo.getName());
+	    request.setAttribute("currentAge", loggedMemo.getAge());
+	    request.setAttribute("currentAddress", loggedMemo.getAddress());
+	    request.setAttribute("currentPhone", loggedMemo.getPhone());
 		
 		return "updateMember";
 	}
@@ -88,7 +92,7 @@ public class MyControllerMemo {
 		String modphone=request.getParameter("modPhone");
 		
 		Memo loggedMemo=memoRepository.findByUserId(userid);
-		
+
 		Memo memo=Memo.builder()
 				.id(loggedMemo.getId())
 				.userId(loggedMemo.getUserId())
@@ -107,6 +111,51 @@ public class MyControllerMemo {
 	    request.setAttribute("currentPhone", loggedMemo.getPhone());
 		
 		return "loginSuccess";
+	}
+	
+	@RequestMapping(value="/findPage", method = RequestMethod.GET) //index.html에 있음
+	public String findPage(HttpServletRequest request) {
+		return "findPassword";
+	}
+	
+	
+	@RequestMapping(value="/findPassword", method=RequestMethod.POST)
+	public String findPassword(HttpServletRequest request) {
+		String name=request.getParameter("name");
+		String phone=request.getParameter("phone");
+		
+		Memo loggedMemo=memoRepository.findByNameAndPhone(name, phone);
+		System.out.println(loggedMemo);
+		
+		if(loggedMemo!=null) {
+			request.setAttribute("currentId", loggedMemo.getUserId());
+			return "rePassword";	
+		}
+		else {
+			System.out.println("존재하지 않는 회원입니다.");
+			return "redirect:/";
+		}
+	}
+	
+	@RequestMapping(value="/resetPassword", method=RequestMethod.POST)
+	public String resetPassword(HttpServletRequest request) {
+		String userId=request.getParameter("userId");
+		String repwd=request.getParameter("pwd");
+		
+		Memo loggedMemo=memoRepository.findByUserId(userId);
+		System.out.println(repwd);
+		
+		/*
+		 * Memo memo=Memo.builder() .id(loggedMemo.getId())
+		 * .userId(loggedMemo.getUserId()) .name(loggedMemo.getName())
+		 * .age(loggedMemo.getAge()) .address(loggedMemo.getAddress())
+		 * .phone(loggedMemo.getPhone()) .password(repwd) .build();
+		 */
+		
+		loggedMemo.setPassword(repwd);
+		memoRepository.save(loggedMemo);
+		
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value="/deleteMember", method=RequestMethod.GET)

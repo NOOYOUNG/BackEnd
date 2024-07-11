@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @ToString
 @Getter
+@Setter
 @Builder
 //@AllArgsConstructor
 @NoArgsConstructor
