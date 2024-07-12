@@ -15,15 +15,21 @@
 주소: ${currentAddress} <br>
 전화번호: ${currentPhone} <br>
 	<form action="/logout">
-	<input type="submit" value="로그아웃">
+		<input type="submit" value="로그아웃">
 	</form>
 	<form action="/updatePage">
-	<input type="hidden" name="userId" value="${currentuserId}">
-	<input type="submit" value="회원정보 변경">
+		<input type="hidden" name="userId" value="${currentuserId}">
+		<input type="submit" value="회원정보 변경">
 	</form>
 	<form action="/deleteMember">
-	<input type="hidden" name="userId" value="${currentuserId}">
-	<input type="submit" value="회원탈퇴">
+		<input type="hidden" name="userId" value="${currentuserId}">
+		<input type="submit" value="회원탈퇴">
+	</form>
+	<form action="/addBook">
+		<input type="submit" value="도서 추가 등록">
+	</form>
+	<form action="/readBookPage">
+		<input type="submit" value="도서 목록 조회">
 	</form>
 </body>
 </html>

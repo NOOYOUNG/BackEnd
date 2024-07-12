@@ -1,5 +1,12 @@
 package com.example.demo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +15,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.data.domain.Sort;
 
 @Controller
 public class MyControllerMemo {
 	@Autowired // 종속성
 	private MemoRepository memoRepository;
+	
+	@Autowired
+	private BookDao bookDao;
+	
 	LoginClassMemo lC=new LoginClassMemo();
+	
+	@RequestMapping(value="/", method=RequestMethod.GET)
+	public String index(HttpServletRequest request) {
+		return "index";
+	}
 	
 	@RequestMapping(value="/joins", method=RequestMethod.POST)
 	public String joinStart(HttpServletRequest request) {
@@ -39,18 +58,20 @@ public class MyControllerMemo {
 	}
 
 	@RequestMapping(value="/logIn", method = RequestMethod.POST)
-	public String logIn(HttpServletRequest request) {
-		String id=request.getParameter("id");
+	public String logIn(HttpServletRequest request, HttpSession session) {
+		String userid=request.getParameter("id");
 		String pwd=request.getParameter("pwd");
 		
-		if(lC.login(memoRepository, id, pwd)==true) {
-			Memo loggedMemo = memoRepository.findByUserId(id);
+		if(lC.login(memoRepository, userid, pwd)==true) {
+			Memo loggedMemo = memoRepository.findByUserId(userid);
 			
 	        request.setAttribute("currentuserId", loggedMemo.getUserId());
 	        request.setAttribute("currentName", loggedMemo.getName());
 	        request.setAttribute("currentAge", loggedMemo.getAge());
 	        request.setAttribute("currentAddress", loggedMemo.getAddress());
-	        request.setAttribute("currentPhone", loggedMemo.getPhone());		
+	        request.setAttribute("currentPhone", loggedMemo.getPhone());
+	        
+	        session.setAttribute("loginok", userid);
 			
 			return "loginSuccess";
 		}
@@ -59,8 +80,30 @@ public class MyControllerMemo {
 		}
 	}
 	
+	@RequestMapping(value="/loginok", method=RequestMethod.GET)
+	public String loginOk(HttpServletRequest request, HttpSession session) {
+		String id=(String)session.getAttribute("loginok");
+		if(id==null) {
+			return "redirect:/";
+		}
+		
+		Memo resultMemo=memoRepository.findByUserId(id);
+		if(resultMemo==null) {
+			return "redirect:/";
+		}
+		
+		request.setAttribute("cuurenduserId", id);
+		request.setAttribute("currentName", resultMemo.getName());
+		request.setAttribute("currentAge", resultMemo.getAge());
+		request.setAttribute("currentAddress", resultMemo.getAddress());
+		request.setAttribute("currentPhone", resultMemo.getPhone());
+		
+		return "loginSuccess"; 
+	}
+	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
-	public String logout(HttpServletRequest request) {
+	public String logout(HttpServletRequest request, HttpSession session) {
+		session.setAttribute("loginok", null);
 		lC.logout();
 		return "logout";
 	}
@@ -175,5 +218,76 @@ public class MyControllerMemo {
 			return "loginSuccess";
 		}
 	}
+	
+	
+	@RequestMapping(value="/addBook", method=RequestMethod.GET)
+	public String addBook(HttpServletRequest request) {
+		return "addBook";
+	}
+	
+	@RequestMapping(value="/insertbook", method=RequestMethod.GET)
+	public String insertBook(HttpServletRequest request) {
+		String bookName=request.getParameter("bookname");
+		String isbn=request.getParameter("isbn");
+		String author=request.getParameter("author");
+		String publisher=request.getParameter("publisher");
+		String publishdate=request.getParameter("publishdate");
+		
+		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate publishDate=LocalDate.parse(publishdate, formatter);
+		
+		BookInfo book=BookInfo.builder()
+				.bookName(bookName)
+				.isbn(isbn)
+				.author(author)
+				.publisher(publisher)
+				.publishDate(publishDate)
+				.build();
+		bookDao.save(book);
+		
+		return "loginSuccess";
+	}
+	
+	@RequestMapping(value="/readBookPage", method=RequestMethod.GET)
+	public String readBookPage(HttpServletRequest request) {
+		List<BookInfo> bookList=bookDao.findAll(Sort.by(Sort.Direction.DESC, "publishDate")); //전체 리스트의 정보를 찾아서 넘겨줌
+		
+		request.setAttribute("bookList", bookList);
+		
+		return "readBookList";
+	}
+	
+	@RequestMapping(value="/deleteBook", method=RequestMethod.GET)
+	public String deleteBook(HttpServletRequest request) {
+			String delId=request.getParameter("id");
+			Long id=Long.parseLong(delId);
+			bookDao.deleteById(id);
+			
+			List<BookInfo> bookList=bookDao.findAll(Sort.by(Sort.Direction.DESC, "publishDate")); //전체 리스트의 정보를 찾아서 넘겨줌
+			request.setAttribute("bookList", bookList);
+			
+			return "readBookList"; 
+	}
+	
+	@RequestMapping(value="/searchBook", method=RequestMethod.GET)
+	public String searchBookPage(HttpServletRequest request) {
+		String searchText=request.getParameter("searchText");
+		
+		List<BookInfo> bookList=bookDao.findByBookNameContains(searchText); //전체 리스트의 정보를 찾아서 넘겨줌
+		//containing==LIKE
+		
+		request.setAttribute("bookList", bookList);
+		
+		return "readBookList";
+	}
+	
+	@RequestMapping(value="/MyPage", method=RequestMethod.GET)
+	public String readBookList(HttpServletRequest request) {
+		return "loginSuccess";
+	}
+
+	
+
+
 	
 }

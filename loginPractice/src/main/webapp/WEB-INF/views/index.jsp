@@ -1,8 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login Page</title>
+<title>Insert title here</title>
 <script>
 	var loginok='<%=(String)session.getAttribute("loginok")%>';
 	if(loginok!=null && loginok!=""){
@@ -21,5 +23,7 @@
 	</form>
 	<input type="button" value="회원가입" onclick="javascript:location.replace('join.html')">
 	<input type="button" value="비밀번호 찾기" onclick="javascript:location.replace('/findPage')">
+</body>
+</html>
 </body>
 </html>
