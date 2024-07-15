@@ -51,6 +51,15 @@
 				</td>
 			</tr>
 			<tr>
+				<td>도서 정보 수정하기</td>
+				<td>
+					<form action="/updateBookPage" method="GET">
+					<input type="hidden" name="id" value="${item.id}">
+					<input type="submit" value="수정">
+					</form>
+				</td>
+			</tr>
+			<tr>
 				<td bgcolor="black" height="2px" colspan=2></td>
 			</tr>
 		</c:forEach>
@@ -58,5 +67,12 @@
 	<form action="/MyPage">
 		<input type="submit" value="마이페이지">
 	</form>
+	<script>
+		var loginok = '<%=(String)session.getAttribute("loginok")%>';
+		if(loginok == "" || loginok == "null") {
+			alert("로그인이 되어 있지 않습니다.");
+			location.replace("/");
+		}
+	</script>
 </body>
 </html>

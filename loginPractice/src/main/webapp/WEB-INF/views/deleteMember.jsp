@@ -13,7 +13,7 @@
         
         if (answer) {
             document.write("<p>탈퇴가 완료되었습니다.</p>");
-            document.write('<input type="button" value="홈으로 가기" onclick="javascript:location.replace(\'/\')">');
+            document.write('<input type="button" value="홈으로 가기" onclick="javascript:location.replace('/')">');
         } else {
             location.replace('/');
         }

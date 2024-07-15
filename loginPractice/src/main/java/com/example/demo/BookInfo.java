@@ -36,4 +36,11 @@ public class BookInfo {
 	@Column(length = 100, nullable = false)
 	private LocalDate publishDate;
 	
+//	public BookInfo(Long id, String bookName, String isbn, String author, String publisher, LocalDate publishDate) {
+//		this.id=id;
+//		this.bookName=bookName;
+//		this.author=author;
+//		this.publisher=publisher;
+//		this.publishDate=publishDate;
+//	}
 }

@@ -16,5 +16,12 @@
 	출판일자: <input type="date" name="publishdate"><br>
 	<input type="submit" value="등록하기">
 </form>
+	<script>
+		var loginok = '<%=(String)session.getAttribute("loginok")%>';
+		if(loginok == "" || loginok == "null") {
+			alert("로그인이 되어 있지 않습니다.");
+			location.replace("/");
+		}
+	</script>
 </body>
 </html>
