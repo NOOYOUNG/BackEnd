@@ -1,0 +1,92 @@
+
+<HTML>
+<head>
+<meta charset="utf8">
+</head>
+<body>
+	<script>
+			getList();
+			function getList() {
+				fetch("http://localhost:8080/listREST") // 서버에서 데이터를 가져오기 위해 fetch 함수를 사용
+					.then((response) => response.json()) // 서버 응답을 JSON 형식으로 변환
+					.then((data) => { // JSON 데이터 처리
+					  document.getElementById("contentsTable").innerHTML = ""; // contentsTable 요소의 HTML 내용 초기화
+					  for(index = 0; index < data.length; index++) { // 데이터 배열을 순회하며 각 데이터를 테이블의 행으로 추가
+						document.getElementById("contentsTable").innerHTML += 
+							"		<tr>" +
+							"			<td><a href='javascript:goDel(" + data[index].id + // 삭제 링크를 만들어서 goDel 함수를 호출하도록 설정합
+										")'>[X]</a></td>" + 
+							"			<td>" + data[index].id + "</td>" +
+							"			<td>" + data[index].userId + "</td>" +
+							"			<td>" + data[index].name + "</td>" +
+							"			<td>" + data[index].content + "</td>" +
+							"		</tr>";
+					  }
+					});
+			}
+			function goDel(id) {
+				if(confirm("정말 삭제하시겠습니까?")){
+					result = window.prompt("비밀번호", "");
+					fetch("http://localhost:8080/delREST?id=" + id + "&password=" + result)
+					.then((response) => response.json())
+					.then((data) => {
+					    if(data.result == "fail") {
+					        alert("비밀번호가 틀렸습니다.");
+					    } else {
+					        getList();
+					    }
+					});  
+				}				
+			}
+			function goAdd() {
+				// 사용자가 입력한 데이터를 가져옴
+				var userId = document.getElementById("userId").value;
+				var username = document.getElementById("username").value;
+				var contents = document.getElementById("contents").value;
+				var password = document.getElementById("password").value;
+				const payload = new FormData(); // FormData 객체를 생성하고 사용자 입력 데이터 추가
+				payload.append("userId", userId);
+				payload.append("username", username);
+				payload.append("contents", contents);
+				payload.append("password", password);
+				fetch("http://localhost:8080/addREST", { // 서버에 데이터 추가 요청
+					  method: "POST",
+					  body: payload,
+				})
+				.then((response) => {
+  				  document.getElementById("userId").value = "";
+				  document.getElementById("username").value = "";
+				  document.getElementById("contents").value = "";
+				  document.getElementById("password").value = "";
+				  getList();
+				});
+			}		
+			function keyPress(event) {
+				if(event.keyCode == 13) {
+					goAdd();
+				}
+			}
+		</script>
+	<table>
+		<tr>
+			<td colspan=3>
+				<form id="myform" method="POST">
+					<input type="text" id="username" name="username" placeholder="작성자">
+					<input type="text" id="contents" name="contents" placeholder="내용">
+					<input type="text" id="userId" name="userId" placeholder="아이디">
+					<input type="text" id="password" name="password" placeholder="비밀번호">
+					<input type="button" value="입력" onclick="javascript:goAdd()">
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>게시글번호</td>
+			<td>ID</td>
+			<td>작성자</td>
+			<td>내용</td>
+		</tr>
+	</table>
+	<table id="contentsTable">
+	</table>
+</body>
+</HTML>
