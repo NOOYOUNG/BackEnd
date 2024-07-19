@@ -6,6 +6,15 @@
 <body>
 	<script>
 			getList();
+			function loginCheck(){
+				var loginok='<%=(String)session.getAttribute("loginok")%>'
+				if(loginok!="" && loginok!=null){
+					document.getElementById("contentsTable")
+				}
+				else{
+					document.getElementById("loginBox");
+				}
+			}
 			function getList() {
 				fetch("http://localhost:8080/listREST") // 서버에서 데이터를 가져오기 위해 fetch 함수를 사용
 					.then((response) => response.json()) // 서버 응답을 JSON 형식으로 변환
@@ -67,26 +76,36 @@
 				}
 			}
 		</script>
-	<table>
-		<tr>
-			<td colspan=3>
-				<form id="myform" method="POST">
-					<input type="text" id="username" name="username" placeholder="작성자">
-					<input type="text" id="contents" name="contents" placeholder="내용">
-					<input type="text" id="userId" name="userId" placeholder="아이디">
-					<input type="text" id="password" name="password" placeholder="비밀번호">
-					<input type="button" value="입력" onclick="javascript:goAdd()">
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td>게시글번호</td>
-			<td>ID</td>
-			<td>작성자</td>
-			<td>내용</td>
-		</tr>
-	</table>
-	<table id="contentsTable">
-	</table>
+	<div id="loginBox">
+		<form name="loginForm">
+			로그인 아이디<input type="text" name="id">
+			로그인 비밀번호<input type="password" name="password">
+			<input type="submit" value="로그인">
+		</form>
+	</div>
+	<div id="contentsTable">
+		<table>
+			<tr>
+				<td colspan=3>
+					<form id="myform" method="POST">
+						<input type="text" id="username" name="username" placeholder="작성자">
+						<input type="text" id="contents" name="contents" placeholder="내용">
+						<input type="text" id="userId" name="userId" placeholder="아이디">
+						<input type="text" id="password" name="password"
+							placeholder="비밀번호"> <input type="button" value="입력"
+							onclick="javascript:goAdd()">
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td>게시글번호</td>
+				<td>ID</td>
+				<td>작성자</td>
+				<td>내용</td>
+			</tr>
+		</table>
+		<table id="contentsTable">
+		</table>
+	</div>
 </body>
 </HTML>

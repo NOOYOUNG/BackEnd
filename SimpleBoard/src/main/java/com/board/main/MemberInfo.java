@@ -9,20 +9,19 @@ import jakarta.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="bd_mem")
+@Table(name="api_mem")
 @Entity
-public class SimpleBoard {
+
+public class MemberInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(length = 100, nullable = false)
 	private String password;
-
-	@Column(length = 50, nullable = false)
-	private String name;
 	
-	@Column(length = 500, nullable = false)
-	private String content;
+	@Column(length = 100, nullable = false)
+	private String name;
+
 	
 }
